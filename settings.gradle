@@ -1,1 +1,6 @@
-rootProject.name="minecraft-server-ui"
+rootProject.name='minecraft-server-ui'
+
+include 'client'
+include 'server'
+include 'minecraft-server'
+include 'non-blocking-pty'
