@@ -13,7 +13,8 @@ import static java.util.stream.Collectors.toList;
 @Value
 @Builder
 public class StartCommand {
-  String java = "java";
+  String javaCommand = "java";
+  @Singular
   List<JavaArgument> javaArguments;
   File serverJar;
   @Singular
@@ -21,7 +22,7 @@ public class StartCommand {
 
   public List<String> toCommand() {
     List<String> command = new ArrayList<>();
-    command.add(java);
+    command.add(javaCommand);
     command.addAll(javaArguments.stream()
         .flatMap(j -> j.forCommandLine().stream())
         .collect(toList()));

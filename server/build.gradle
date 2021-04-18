@@ -1,4 +1,5 @@
 plugins {
+    id "io.freefair.lombok" version "5.3.0"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("io.micronaut.application") version "1.4.2"
 }
@@ -21,6 +22,9 @@ micronaut {
 
 dependencies {
     implementation project(':minecraft-server')
+
+    annotationProcessor "io.micronaut.configuration:micronaut-openapi"
+    compile "io.swagger.core.v3:swagger-annotations"
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-runtime")
     implementation("javax.annotation:javax.annotation-api")
@@ -37,5 +41,7 @@ java {
     targetCompatibility = JavaVersion.toVersion("15")
 }
 
-
-
+tasks.withType(JavaCompile) {
+    options.fork = true
+    options.forkOptions.jvmArgs << '-Dmicronaut.openapi.views.spec=swagger-ui.enabled=true,swagger-ui.theme=flattop'
+}

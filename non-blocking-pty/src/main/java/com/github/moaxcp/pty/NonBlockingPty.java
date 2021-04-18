@@ -92,6 +92,10 @@ public class NonBlockingPty {
       .build();
   }
 
+  public boolean isRunning() {
+    return eventLoop.isRunning() || input.isRunning() || output.isRunning() || error.isRunning();
+  }
+
   public void stop() {
     process.destroy();
   }
