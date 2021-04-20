@@ -4,6 +4,4 @@ plugins {
 }
 
 dependencies {
-    api project(':non-blocking-pty')
-    api project(':java-jvm')
 }

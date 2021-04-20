@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public class NonBlockingPty {
@@ -18,16 +19,16 @@ public class NonBlockingPty {
   private EventLoop eventLoop;
   private final Map<String, Consumer<byte[]>> outputListeners = new HashMap<>();
 
-  public NonBlockingPty(String... command) throws IOException {
-    this(true, command);
+  public NonBlockingPty(String commandDirectory, String... command) throws IOException {
+    this(commandDirectory, true, command);
   }
 
-  public NonBlockingPty(boolean redirectError, String... command) {
-    builder = new PtyProcessBuilder(command);
+  public NonBlockingPty(String commandDirectory, boolean redirectError, String... command) {
+    builder = new PtyProcessBuilder(command).setDirectory(commandDirectory);
   }
 
-  public NonBlockingPty(List<String> toCommand) throws IOException {
-    this(toCommand.toArray(new String[]{}));
+  public NonBlockingPty(String commandDirectory, List<String> toCommand) throws IOException {
+    this(commandDirectory, toCommand.toArray(new String[]{}));
   }
 
   public void start() throws IOException {
@@ -98,6 +99,10 @@ public class NonBlockingPty {
 
   public void stop() {
     process.destroy();
+  }
+
+  public void waitFor(long timeout, TimeUnit unit) throws InterruptedException {
+    process.waitFor(timeout, unit);
   }
 
   public void input(byte[] bytes) {

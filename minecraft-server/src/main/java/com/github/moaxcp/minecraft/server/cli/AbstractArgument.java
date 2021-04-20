@@ -2,15 +2,15 @@ package com.github.moaxcp.minecraft.server.cli;
 
 import java.util.List;
 
-abstract class AbstractArgument implements Argument {
-  private final List<String> command;
+public abstract class AbstractArgument implements Argument {
+  private final List<String> arguments;
 
   public AbstractArgument(String... arguments) {
-    command = List.of(arguments);
+    this.arguments = List.of(arguments);
   }
 
   @Override
-  public List<String> forCommandLine() {
-    return command;
+  public final List<String> getArguments() {
+    return arguments;
   }
 }

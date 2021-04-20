@@ -1,6 +1,4 @@
-package com.github.moaxcp.minecraft.server.cli;
-
-import lombok.NonNull;
+package com.github.moaxcp.minecraft.server.cli.minecraft;
 
 public class Nogui extends MinecraftArgument {
   public Nogui() {

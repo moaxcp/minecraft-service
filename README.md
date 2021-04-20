@@ -1,12 +1,21 @@
-## Micronaut 2.4.2 Documentation
+# minecraft-server-ui
 
-- [User Guide](https://docs.micronaut.io/2.4.2/guide/index.html)
-- [API Reference](https://docs.micronaut.io/2.4.2/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/2.4.2/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+The purpose of this project is to manage a self hosted minecraft server.
 
-## Feature http-client documentation
+# Current features
 
-- [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
+* start and stop server
+* view status of server
 
+# Target features
+
+* provide console access to server
+* create backups
+* create different worlds and switch between them
+* change arguments to jvm which runs minecraft
+* change which jvm runs minecraft
+* download and run different versions of minecraft server
+* upgrade worlds to newer versions
+* log in with google account
+* have permissions for each action
+* assign roles to each user

@@ -1,5 +1,6 @@
-package com.github.moaxcp.minecraft.server.cli;
+package com.github.moaxcp.minecraft.server.cli.minecraft;
 
+import com.github.moaxcp.minecraft.server.cli.AbstractArgument;
 import lombok.NonNull;
 
 public abstract class MinecraftArgument extends AbstractArgument {
