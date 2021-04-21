@@ -3,20 +3,22 @@ package com.github.moaxcp.minecraft.server.cli.java;
 import lombok.Builder;
 import lombok.Value;
 
+import java.nio.file.Path;
+
 @Value
 @Builder
 public class JavaJvm {
-  String command;
+  Path command;
   String version;
-  String home;
+  Path home;
 
   public static JavaJvm detectCurrentJvm() {
     String command = ProcessHandle.current().info().command().orElseThrow();
     String version = System.getProperty("java.version");
     String home = System.getProperty("java.home");
     return JavaJvm.builder()
-        .command(command)
-        .home(home)
+        .command(Path.of(command))
+        .home(Path.of(home))
         .version(version)
         .build();
   }

@@ -3,6 +3,7 @@ package com.github.moaxcp.pty;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +20,15 @@ public class NonBlockingPty {
   private EventLoop eventLoop;
   private final Map<String, Consumer<byte[]>> outputListeners = new HashMap<>();
 
-  public NonBlockingPty(String commandDirectory, String... command) throws IOException {
+  public NonBlockingPty(Path commandDirectory, String... command) throws IOException {
     this(commandDirectory, true, command);
   }
 
-  public NonBlockingPty(String commandDirectory, boolean redirectError, String... command) {
-    builder = new PtyProcessBuilder(command).setDirectory(commandDirectory);
+  public NonBlockingPty(Path commandDirectory, boolean redirectError, String... command) {
+    builder = new PtyProcessBuilder(command).setDirectory(commandDirectory.normalize().toString());
   }
 
-  public NonBlockingPty(String commandDirectory, List<String> toCommand) throws IOException {
+  public NonBlockingPty(Path commandDirectory, List<String> toCommand) throws IOException {
     this(commandDirectory, toCommand.toArray(new String[]{}));
   }
 

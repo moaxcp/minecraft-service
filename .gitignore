@@ -12,6 +12,4 @@ out/
 .settings
 .classpath
 .factorypath
-/universe/
-/test-server/
-/downloads/
+/minecraft/

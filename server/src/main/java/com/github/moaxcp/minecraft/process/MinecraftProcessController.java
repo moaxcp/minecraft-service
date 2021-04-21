@@ -1,48 +1,37 @@
 package com.github.moaxcp.minecraft.process;
 
-import com.github.moaxcp.minecraft.server.MinecraftProcess;
-import com.github.moaxcp.minecraft.server.MinecraftReport;
+import com.github.moaxcp.minecraft.server.MinecraftServerStatus;
+import com.github.moaxcp.minecraft.server.MinecraftService;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import lombok.NonNull;
 
-import java.io.File;
-
-import static com.github.moaxcp.minecraft.server.cli.minecraft.MinecraftArgument.*;
+import java.util.Optional;
 
 @Controller("/minecraft-process")
 public class MinecraftProcessController {
   @NonNull
-  private final MinecraftProcess minecraftProcess;
-  private StartCommand startCommand;
+  private final MinecraftService minecraftService;
 
-  public MinecraftProcessController(@NonNull MinecraftProcess minecraftProcess) {
-    this.minecraftProcess = minecraftProcess;
-    startCommand = StartCommand.builder()
-        .serverDirectory(new File("../test-server").getAbsolutePath())
-        .serverJar("../downloads/server-jars/minecraft-server-1.6.5.jar")
-        .minecraftArgument(nogui())
-        .minecraftArgument(universe("universe"))
-        .minecraftArgument(world("world"))
-        .build();
-    minecraftProcess.setStartCommand(startCommand);
+  public MinecraftProcessController(@NonNull MinecraftService minecraftService) {
+    this.minecraftService = minecraftService;
   }
 
-  @Get("/start-command")
-  public StartCommand startCommand() {
-    return startCommand;
+  @Get("/running-start-command")
+  public Optional<StartCommand> runningStartCommand() {
+    return minecraftService.getRunningStartCommand();
   }
 
   @Post("/start")
   public void start() {
-    minecraftProcess.start();
+    minecraftService.startProcess();
   }
 
   @Post("/stop")
   public void stop() {
-    minecraftProcess.stop();
+    minecraftService.stopProcess();
   }
 
   /**
@@ -51,24 +40,16 @@ public class MinecraftProcessController {
    */
   @Post("/stop-process")
   public void stopProcess() {
-    minecraftProcess.destroy();
+    minecraftService.destroy();
   }
 
   @Get("/status")
-  public MinecraftReport status() {
-    return MinecraftReport.builder()
-        .startCommand(startCommand)
-        .minecraftStatus(minecraftProcess.getStatus())
-        .processStatus(minecraftProcess.getProcessStatus())
-        .build();
+  public Optional<MinecraftServerStatus> status() {
+    return minecraftService.getServerStatus();
   }
 
   @Get("/history")
-  public String history() {
-    byte[] bytes = new byte[minecraftProcess.getHistory().size()];
-    for(int i = 0; i < minecraftProcess.getHistory().size(); i++) {
-      bytes[i] = minecraftProcess.getHistory().get(i);
-    }
-    return new String(bytes);
+  public Optional<String> history() {
+    return minecraftService.getHistory();
   }
 }

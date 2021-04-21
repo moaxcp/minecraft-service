@@ -3,6 +3,8 @@ package com.github.moaxcp.minecraft.server.cli.minecraft;
 import com.github.moaxcp.minecraft.server.cli.AbstractArgument;
 import lombok.NonNull;
 
+import java.nio.file.Path;
+
 public abstract class MinecraftArgument extends AbstractArgument {
 
   public static BonusChest bonusChest() {
@@ -21,7 +23,7 @@ public abstract class MinecraftArgument extends AbstractArgument {
     return new Nogui();
   }
 
-  public static Universe universe(String universe) {
+  public static Universe universe(Path universe) {
     return new Universe(universe);
   }
 

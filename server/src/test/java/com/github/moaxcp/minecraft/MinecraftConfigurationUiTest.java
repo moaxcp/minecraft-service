@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import javax.inject.Inject;
 
 @MicronautTest
-class MinecraftServerUiTest {
+class MinecraftConfigurationUiTest {
 
     @Inject
     EmbeddedApplication<?> application;

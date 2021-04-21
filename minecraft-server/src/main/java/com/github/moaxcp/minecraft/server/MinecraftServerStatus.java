@@ -5,16 +5,14 @@ import com.github.moaxcp.pty.Status;
 import lombok.Builder;
 import lombok.Value;
 
-import java.util.List;
 import java.util.Optional;
 
 @Value
 @Builder
-public class MinecraftReport {
+public class MinecraftServerStatus {
+  MinecraftConfiguration runningConfiguration;
+  MinecraftConfiguration selectedConfiguration;
   StartCommand startCommand;
-  MinecraftStatus minecraftStatus;
+  MinecraftProcessStatus minecraftProcessStatus;
   Optional<Status> processStatus;
-  public List<String> getCommand() {
-    return startCommand.toCommand();
-  }
 }

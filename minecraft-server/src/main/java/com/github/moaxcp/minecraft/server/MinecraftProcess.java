@@ -14,28 +14,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static com.github.moaxcp.minecraft.server.MinecraftStatus.*;
+import static com.github.moaxcp.minecraft.server.MinecraftProcessStatus.*;
 
 public class MinecraftProcess {
   @Getter
-  private StartCommand startCommand = StartCommand.builder().build();
+  private StartCommand startCommand;
   private final int historyCapacity;
   private NonBlockingPty process;
-  private MinecraftStatus status;
+  private MinecraftProcessStatus status;
   private final List<Byte> history = new ArrayList<>();
 
-  public MinecraftProcess(int historyCapacity) {
+  public MinecraftProcess(int historyCapacity, StartCommand startCommand) {
     this.historyCapacity = historyCapacity;
+    this.startCommand = startCommand;
     status = CREATED;
   }
 
   public List<Byte> getHistory() {
     return Collections.unmodifiableList(history);
-  }
-
-  public void setStartCommand(StartCommand startCommand) {
-    status = START_COMMAND_SET;
-    this.startCommand = startCommand;
   }
 
   public void start() {
@@ -79,7 +75,7 @@ public class MinecraftProcess {
     }
   }
 
-  public MinecraftStatus getStatus() {
+  public MinecraftProcessStatus getStatus() {
     return status;
   }
 

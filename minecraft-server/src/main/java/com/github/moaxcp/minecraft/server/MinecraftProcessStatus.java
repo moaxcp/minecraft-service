@@ -1,6 +1,6 @@
 package com.github.moaxcp.minecraft.server;
 
-public enum MinecraftStatus {
+public enum MinecraftProcessStatus {
   CREATED,
   START_COMMAND_SET,
   STARTED,
