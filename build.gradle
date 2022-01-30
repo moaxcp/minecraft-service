@@ -4,10 +4,13 @@ group = "com.github.moaxcp.minecraft"
 
 allprojects {
     repositories {
-        mavenCentral()
-        jcenter()
         maven {
-            url  "https://jetbrains.bintray.com/pty4j"
+            url 'https://packages.jetbrains.team/maven/p/ij/intellij-dependencies'
+            content {
+                includeGroup 'org.jetbrains.pty4j'
+            }
         }
+
+        mavenCentral()
     }
 }

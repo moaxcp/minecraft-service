@@ -1,5 +1,6 @@
 package com.github.moaxcp.minecraft.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
 
 import java.nio.file.Path;
@@ -18,12 +19,14 @@ public class MinecraftService {
   private volatile MinecraftProcess process;
   private Path baseDirectory;
   private volatile int historySize;
+  private ObjectMapper mapper;
 
   /**
    *
    * @param historySize lines of console history to keep
    */
   public MinecraftService(Path baseDirectory, int historySize) {
+    mapper = new ObjectMapper();
     this.baseDirectory = baseDirectory;
     this.historySize = historySize;
   }

@@ -2,11 +2,13 @@ package com.github.moaxcp.minecraft.server.cli.java;
 
 import lombok.Builder;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 import java.nio.file.Path;
 
 @Value
 @Builder
+@Jacksonized
 public class JavaJvm {
   Path command;
   String version;
