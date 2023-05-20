@@ -4,7 +4,6 @@ Thumbs.db
 build/
 target/
 out/
-.idea
 *.iml
 *.ipr
 *.iws
@@ -13,3 +12,4 @@ out/
 .classpath
 .factorypath
 /minecraft/
+lombok.config

@@ -5,7 +5,6 @@ plugins {
 }
 
 version = "0.1"
-group = "com.github.moaxcp.minecraft"
 
 repositories {
     mavenCentral()
@@ -22,6 +21,7 @@ micronaut {
 
 dependencies {
     implementation project(':minecraft-server')
+    implementation project(':minecraft-api-client')
 
     annotationProcessor("io.micronaut.openapi:micronaut-openapi:3.2.0")
     implementation "io.swagger.core.v3:swagger-annotations"
