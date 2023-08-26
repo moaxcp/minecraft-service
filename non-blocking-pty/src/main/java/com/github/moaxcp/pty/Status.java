@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @Builder
 public class Status {
-  int pid;
+  long pid;
   WinSize winSize;
   Integer result;
   boolean eventLoopRunning;

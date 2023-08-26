@@ -80,7 +80,7 @@ public class NonBlockingPty {
 
   public Status status() throws IOException {
     return Status.builder()
-      .pid(process.getPid())
+      .pid(process.pid())
       .winSize(process.getWinSize())
       .result(eventLoop.getResult())
       .eventLoopRunning(eventLoop.isRunning())
