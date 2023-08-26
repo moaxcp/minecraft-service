@@ -1,7 +1,8 @@
 plugins {
     id 'io.freefair.lombok' version '8.2.2'
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.7.10"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.micronaut.application") version "4.0.2"
+    id("io.micronaut.aot") version "4.0.2"
 }
 
 version = "0.1"
@@ -11,12 +12,23 @@ repositories {
 }
 
 micronaut {
-    version = '3.10.1'
+    version = '4.0.5'
     runtime("netty")
     testRuntime("junit5")
     processing {
         incremental(true)
         annotations("com.github.moaxcp.minecraft.*")
+    }
+    aot {
+        // Please review carefully the optimizations enabled below
+        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+        optimizeServiceLoading = false
+        convertYamlToJava = false
+        precomputeOperations = true
+        cacheEnvironment = true
+        optimizeClassLoading = true
+        deduceEnvironment = true
+        optimizeNetty = true
     }
 }
 
@@ -25,7 +37,7 @@ dependencies {
     implementation project(':minecraft-server')
     implementation project(':minecraft-api-client')
 
-    annotationProcessor("io.micronaut.openapi:micronaut-openapi:3.10.1")
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     implementation "io.swagger.core.v3:swagger-annotations"
 
 
@@ -35,7 +47,6 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic:1.4.11")
-    implementation("io.micronaut:micronaut-validation")
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
 
 }
