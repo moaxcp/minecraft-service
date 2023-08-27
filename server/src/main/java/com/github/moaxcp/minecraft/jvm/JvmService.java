@@ -1,12 +1,12 @@
 package com.github.moaxcp.minecraft.jvm;
 
-import com.github.moaxcp.minecraft.server.cli.java.JavaJvm;
+import com.github.moaxcp.minecraft.server.configuration.JavaJvm;
 
 import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.github.moaxcp.minecraft.server.cli.java.JavaJvm.detectCurrentJvm;
+import static com.github.moaxcp.minecraft.server.configuration.JavaJvm.detectCurrentJvm;
 
 @Singleton
 public class JvmService {

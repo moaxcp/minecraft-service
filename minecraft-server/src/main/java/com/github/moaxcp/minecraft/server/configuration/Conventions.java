@@ -1,7 +1,6 @@
-package com.github.moaxcp.minecraft.server;
+package com.github.moaxcp.minecraft.server.configuration;
 
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
-import com.github.moaxcp.minecraft.server.cli.java.JvmSettings;
 import lombok.experimental.UtilityClass;
 
 import java.nio.file.Path;
@@ -17,7 +16,7 @@ public class Conventions {
    * @param server
    * @return
    */
-  StartCommand toStartCommand(Path baseDirectory, MinecraftConfiguration server) {
+  public StartCommand toStartCommand(Path baseDirectory, MinecraftConfiguration server) {
     StartCommand.StartCommandBuilder builder = StartCommand.builder()
         .serverDirectory(baseDirectory.resolve(server.getServerName()))
         .serverJar(baseDirectory.resolve(server.getMinecraftJar().getLocation()))

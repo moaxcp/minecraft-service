@@ -2,6 +2,7 @@ package com.github.moaxcp.minecraft.server.cli;
 
 import com.github.moaxcp.minecraft.server.cli.java.JavaArgument;
 import com.github.moaxcp.minecraft.server.cli.minecraft.MinecraftArgument;
+import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Singular;
@@ -15,6 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 @Value
 @Builder(toBuilder = true)
+@Serdeable
 public class StartCommand {
   @NonNull
   Path serverDirectory;

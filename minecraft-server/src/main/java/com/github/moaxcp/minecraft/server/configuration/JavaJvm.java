@@ -1,17 +1,22 @@
-package com.github.moaxcp.minecraft.server.cli.java;
+package com.github.moaxcp.minecraft.server.configuration;
 
+import io.micronaut.serde.annotation.Serdeable;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 
 import java.nio.file.Path;
 
 @Value
 @Builder
-@Jacksonized
+@Serdeable
 public class JavaJvm {
+  @NotNull
   Path command;
+  @NotBlank
   String version;
+  @NotNull
   Path home;
 
   public static JavaJvm detectCurrentJvm() {

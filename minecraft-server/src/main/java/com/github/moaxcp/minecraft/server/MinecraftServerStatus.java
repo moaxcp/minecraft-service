@@ -1,6 +1,7 @@
 package com.github.moaxcp.minecraft.server;
 
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
+import com.github.moaxcp.minecraft.server.configuration.MinecraftConfiguration;
 import com.github.moaxcp.pty.Status;
 import lombok.Builder;
 import lombok.Value;

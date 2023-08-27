@@ -2,7 +2,7 @@ package com.github.moaxcp.minecraft.configuration;
 
 
 import com.github.moaxcp.minecraft.jvm.JvmService;
-import com.github.moaxcp.minecraft.server.MinecraftConfiguration;
+import com.github.moaxcp.minecraft.server.configuration.MinecraftConfiguration;
 import com.github.moaxcp.minecraft.server.MinecraftService;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
@@ -21,7 +21,7 @@ public class ConfigurationController {
   @NonNull
   private final JvmService jvmService;
 
-  public ConfigurationController(MinecraftService minecraftService, JvmService jvmService) {
+  public ConfigurationController(@NonNull MinecraftService minecraftService, @NonNull JvmService jvmService) {
     this.minecraftService = minecraftService;
     this.jvmService = jvmService;
   }

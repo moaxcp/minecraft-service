@@ -1,8 +1,14 @@
 package com.github.moaxcp.minecraft.server;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.moaxcp.minecraft.server.configuration.Conventions;
+import com.github.moaxcp.minecraft.server.configuration.MinecraftConfiguration;
+import io.micronaut.serde.ObjectMapper;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -13,54 +19,55 @@ import java.util.*;
  *
  */
 public class MinecraftService {
-  private Map<String, MinecraftConfiguration> serverConfigs = new HashMap<>();
-  private MinecraftConfiguration selectedConfiguration;
-  private MinecraftConfiguration runningConfiguration;
-  private volatile MinecraftProcess process;
-  private Path baseDirectory;
-  private volatile int historySize;
-  private ObjectMapper mapper;
 
-  /**
-   *
-   * @param historySize lines of console history to keep
-   */
-  public MinecraftService(Path baseDirectory, int historySize) {
-    mapper = new ObjectMapper();
+  private volatile MinecraftProcess process;
+  private final Path baseDirectory;
+  private final Path configurationPath;
+  private String runningServer;
+  private ServiceConfiguration configuration;
+  private final ObjectMapper mapper;
+
+  public MinecraftService(ObjectMapper mapper, Path baseDirectory) {
+    this.mapper = mapper;
     this.baseDirectory = baseDirectory;
-    this.historySize = historySize;
+    configurationPath = baseDirectory.resolve("configuration.json");
+    try (var in = Files.newInputStream(configurationPath)) {
+      configuration = mapper.readValue(in, ServiceConfiguration.class);
+    } catch (FileNotFoundException e) {
+      configuration = new ServiceConfiguration();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
-  public synchronized void putConfiguration(MinecraftConfiguration serverConfig) {
-    if(process != null && runningConfiguration != null && runningConfiguration.getServerName().equals(serverConfig.getServerName()) && process.isRunning()) {
+  public synchronized void setHistorySize(int historySize) {
+    configuration.setHistorySize(historySize);
+    save();
+  }
+
+  private synchronized void save() {
+    try (var out = Files.newOutputStream(configurationPath)) {
+      mapper.writeValue(out, configuration);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public synchronized void addConfiguration(MinecraftConfiguration serverConfig) {
+    if(process != null && runningServer != null && runningServer.equals(serverConfig.getServerName()) && process.isRunning()) {
       throw new IllegalArgumentException("cannot modify config of running server. Stop the server before configuring it.");
     }
-    serverConfigs.put(serverConfig.getServerName(), serverConfig);
+    configuration.add(serverConfig);
+    save();
   }
 
   public synchronized void selectConfiguration(String configurationName) {
-    selectedConfiguration = serverConfigs.get(configurationName);
-  }
-
-  public synchronized void startProcess() {
-    if(process != null && process.isRunning()) {
-      throw new IllegalStateException("process must first be stopped.");
-    }
-    process = new MinecraftProcess(historySize, Conventions.toStartCommand(baseDirectory, selectedConfiguration));
-    process.start();
-    runningConfiguration = selectedConfiguration;
-  }
-
-  public synchronized void stopProcess() {
-    if(process == null) {
-      return;
-    }
-    process.stop();
-    runningConfiguration = null;
+    configuration.selectServer(configurationName);
+    save();
   }
 
   public synchronized Optional<MinecraftConfiguration> getRunningConfiguration() {
-    return Optional.ofNullable(runningConfiguration);
+    return configuration.get(runningServer);
   }
 
   public synchronized Optional<StartCommand> getRunningStartCommand() {
@@ -70,20 +77,12 @@ public class MinecraftService {
     return Optional.of(process.getStartCommand());
   }
 
-  public synchronized Collection<MinecraftConfiguration> getConfigurations() {
-    return Collections.unmodifiableCollection(serverConfigs.values());
+  public synchronized Set<MinecraftConfiguration> getConfigurations() {
+    return configuration.configurations();
   }
 
   public synchronized Optional<MinecraftConfiguration> getConfiguration(String configurationName) {
-    return Optional.ofNullable(serverConfigs.get(configurationName));
-  }
-
-  public synchronized void destroy() {
-    if(process == null) {
-      return;
-    }
-    process.destroy();
-    runningConfiguration = null;
+    return configuration.get(configurationName);
   }
 
   public synchronized Optional<MinecraftServerStatus> getServerStatus() {
@@ -91,12 +90,12 @@ public class MinecraftService {
       return Optional.empty();
     }
     return Optional.of(MinecraftServerStatus.builder()
-        .runningConfiguration(runningConfiguration)
-        .selectedConfiguration(selectedConfiguration)
-        .startCommand(process.getStartCommand())
-        .processStatus(process.getProcessStatus())
-        .minecraftProcessStatus(process.getStatus())
-        .build());
+            .runningConfiguration(getRunningConfiguration().orElse(null))
+            .selectedConfiguration(configuration.getSelectedConfiguration().orElse(null))
+            .startCommand(process.getStartCommand())
+            .processStatus(process.getProcessStatus())
+            .minecraftProcessStatus(process.getStatus())
+            .build());
   }
 
   public synchronized Optional<String> getHistory() {
@@ -108,5 +107,31 @@ public class MinecraftService {
       bytes[i] = process.getHistory().get(i);
     }
     return Optional.of(new String(bytes));
+  }
+
+  public synchronized void startProcess() {
+    if(process != null && process.isRunning()) {
+      throw new IllegalStateException("process must first be stopped.");
+    }
+    var startConfiguration = configuration.getSelectedConfiguration().orElseThrow(() -> new IllegalStateException("startConfiguration must be selected"));
+    process = new MinecraftProcess(startConfiguration.getHistorySize(), Conventions.toStartCommand(baseDirectory, startConfiguration));
+    process.start();
+    runningServer = startConfiguration.getServerName();
+  }
+
+  public synchronized void stopProcess() {
+    if(process == null) {
+      return;
+    }
+    process.stop();
+    runningServer = null;
+  }
+
+  public synchronized void destroy() {
+    if(process == null) {
+      return;
+    }
+    process.destroy();
+    runningServer = null;
   }
 }
