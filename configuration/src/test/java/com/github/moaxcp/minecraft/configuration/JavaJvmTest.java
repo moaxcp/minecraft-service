@@ -1,5 +1,6 @@
-package com.github.moaxcp.minecraft.server.configuration;
+package com.github.moaxcp.minecraft.configuration;
 
+import com.github.moaxcp.minecraft.configuration.JavaJvm;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.json.JSONException;

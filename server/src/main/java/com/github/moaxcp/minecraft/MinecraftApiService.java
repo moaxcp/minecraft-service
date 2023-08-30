@@ -1,14 +1,15 @@
 package com.github.moaxcp.minecraft;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.moaxcp.minecraft.apiclient.MinecraftClient;
 import com.github.moaxcp.minecraft.apiclient.VersionManifest;
+import io.micronaut.serde.ObjectMapper;
+import lombok.AllArgsConstructor;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class MinecraftApiService {

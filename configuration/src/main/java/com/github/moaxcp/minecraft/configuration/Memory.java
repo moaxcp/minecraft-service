@@ -1,4 +1,4 @@
-package com.github.moaxcp.minecraft.server.configuration;
+package com.github.moaxcp.minecraft.configuration;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.micronaut.serde.annotation.Serdeable;

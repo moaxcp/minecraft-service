@@ -1,4 +1,4 @@
-package com.github.moaxcp.minecraft.server.configuration;
+package com.github.moaxcp.minecraft.configuration;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
@@ -10,7 +10,7 @@ import jakarta.inject.Singleton;
 
 import java.io.IOException;
 
-import static com.github.moaxcp.minecraft.server.configuration.Memory.memory;
+import static com.github.moaxcp.minecraft.configuration.Memory.memory;
 
 @Singleton
 public class MemorySerde implements Serde<Memory> {

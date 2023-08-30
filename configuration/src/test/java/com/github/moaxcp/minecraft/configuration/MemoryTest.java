@@ -1,5 +1,7 @@
-package com.github.moaxcp.minecraft.server.configuration;
+package com.github.moaxcp.minecraft.configuration;
 
+import com.github.moaxcp.minecraft.configuration.Memory;
+import com.github.moaxcp.minecraft.configuration.MemoryUnit;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.validation.validator.Validator;
@@ -8,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static com.github.moaxcp.minecraft.server.configuration.Memory.memory;
+import static com.github.moaxcp.minecraft.configuration.Memory.memory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @MicronautTest

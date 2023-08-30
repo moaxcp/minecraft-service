@@ -1,6 +1,6 @@
 package com.github.moaxcp.minecraft.jvm;
 
-import com.github.moaxcp.minecraft.server.configuration.JavaJvm;
+import com.github.moaxcp.minecraft.configuration.JavaJvm;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import lombok.AllArgsConstructor;

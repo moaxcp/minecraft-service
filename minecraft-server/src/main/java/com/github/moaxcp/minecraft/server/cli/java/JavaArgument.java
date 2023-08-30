@@ -1,6 +1,6 @@
 package com.github.moaxcp.minecraft.server.cli.java;
 
-import com.github.moaxcp.minecraft.server.configuration.Memory;
+import com.github.moaxcp.minecraft.configuration.Memory;
 import com.github.moaxcp.minecraft.server.cli.AbstractArgument;
 
 public abstract class JavaArgument extends AbstractArgument {

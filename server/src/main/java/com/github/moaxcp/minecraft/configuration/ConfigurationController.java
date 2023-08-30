@@ -2,7 +2,6 @@ package com.github.moaxcp.minecraft.configuration;
 
 
 import com.github.moaxcp.minecraft.jvm.JvmService;
-import com.github.moaxcp.minecraft.server.configuration.MinecraftConfiguration;
 import com.github.moaxcp.minecraft.server.MinecraftService;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;

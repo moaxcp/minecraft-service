@@ -1,4 +1,4 @@
-package com.github.moaxcp.minecraft.server;
+package com.github.moaxcp.minecraft.configuration;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;

@@ -1,12 +1,13 @@
-package com.github.moaxcp.minecraft.server.configuration;
+package com.github.moaxcp.minecraft.server;
 
+import com.github.moaxcp.minecraft.configuration.JvmSettings;
+import com.github.moaxcp.minecraft.configuration.MinecraftConfiguration;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
+import com.github.moaxcp.minecraft.server.cli.java.JavaArgument;
+import com.github.moaxcp.minecraft.server.cli.minecraft.MinecraftArgument;
 import lombok.experimental.UtilityClass;
 
 import java.nio.file.Path;
-
-import static com.github.moaxcp.minecraft.server.cli.java.JavaArgument.*;
-import static com.github.moaxcp.minecraft.server.cli.minecraft.MinecraftArgument.nogui;
 
 @UtilityClass
 public class Conventions {
@@ -21,18 +22,18 @@ public class Conventions {
         .serverDirectory(baseDirectory.resolve(server.getServerName()))
         .serverJar(baseDirectory.resolve(server.getMinecraftJar().getLocation()))
         .javaCommand(server.getJavaJvm().getCommand())
-        .minecraftArgument(nogui());
+        .minecraftArgument(MinecraftArgument.nogui());
     if(server.getJvmSettings() != null) {
       JvmSettings jvmSettings = server.getJvmSettings();
       if(jvmSettings.getMaxMemory() != null) {
-        builder.javaArgument(maxMemory(server.getJvmSettings().getMaxMemory()));
+        builder.javaArgument(JavaArgument.maxMemory(server.getJvmSettings().getMaxMemory()));
 
       }
       if(jvmSettings.getMinMemory() != null) {
-        builder.javaArgument(minMemory(server.getJvmSettings().getMinMemory()));
+        builder.javaArgument(JavaArgument.minMemory(server.getJvmSettings().getMinMemory()));
       }
       if(jvmSettings.getThreadStackSize() != null) {
-        builder.javaArgument(threadStackSize(server.getJvmSettings().getThreadStackSize()));
+        builder.javaArgument(JavaArgument.threadStackSize(server.getJvmSettings().getThreadStackSize()));
       }
     }
 
