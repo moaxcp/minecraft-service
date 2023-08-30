@@ -3,6 +3,7 @@ package com.github.moaxcp.minecraft.server;
 import com.github.moaxcp.minecraft.configuration.ConfigurationService;
 import com.github.moaxcp.minecraft.configuration.MinecraftConfiguration;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
+import jakarta.inject.Singleton;
 
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
  * One one server can run at a time
  *
  */
+@Singleton
 public class MinecraftService {
 
   private volatile MinecraftProcess process;
