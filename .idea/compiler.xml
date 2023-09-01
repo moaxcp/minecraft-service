@@ -220,6 +220,7 @@
         <option name="micronaut.processing.module" value="server" />
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.28/a2ff5da8bcd8b1b26f36b806ced63213362c6dcc/lombok-1.18.28.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.security/micronaut-security-annotations/4.0.4/f8902743ecb34ec57b649d4021861a0beac68a2d/micronaut-security-annotations-4.0.4.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.validation/micronaut-validation-processor/4.0.1/32518ebd5951d5f64347fb0a7806dc1dbe752a47/micronaut-validation-processor-4.0.1.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.validation/micronaut-validation/4.0.1/518fdf7b2e11bbe153505a72e305f84cb7dd7d3a/micronaut-validation-4.0.1.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.reactor/micronaut-reactor/3.0.2/209dc7dc4710e241c048a8bafaaf6b0003b99b40/micronaut-reactor-3.0.2.jar" />
@@ -254,6 +255,7 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.serde/micronaut-serde-processor/2.2.0/d6c47ab1eaafcbe388e6d91abed87283cc09b231/micronaut-serde-processor-2.2.0.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.serde/micronaut-serde-api/2.2.0/ab78484edfe317b616dce700985f6a4e7b798b59/micronaut-serde-api-2.2.0.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.openapi/micronaut-openapi/5.0.1/26270e6934c4b3e74e5f6c456ca396e5d581607c/micronaut-openapi-5.0.1.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.security/micronaut-security-annotations/4.0.4/f8902743ecb34ec57b649d4021861a0beac68a2d/micronaut-security-annotations-4.0.4.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.validation/micronaut-validation-processor/4.0.1/32518ebd5951d5f64347fb0a7806dc1dbe752a47/micronaut-validation-processor-4.0.1.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.openapi/micronaut-openapi-annotations/5.0.1/fbf7152fb9582e239622a4422d048a89f2fae364/micronaut-openapi-annotations-5.0.1.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micronaut.validation/micronaut-validation/4.0.1/518fdf7b2e11bbe153505a72e305f84cb7dd7d3a/micronaut-validation-4.0.1.jar" />

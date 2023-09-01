@@ -2,6 +2,7 @@ package com.github.moaxcp.minecraft.configuration;
 
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
 
@@ -11,7 +12,9 @@ import java.util.List;
 @Builder(toBuilder = true)
 @Serdeable
 public class Configuration {
-    ServiceConfiguration serviceConfiguration;
+    @NonNull
+    @Builder.Default
+    ServiceConfiguration serviceConfiguration = ServiceConfiguration.builder().build();
     @Singular
     List<JavaJvm> jvms;
     @Singular

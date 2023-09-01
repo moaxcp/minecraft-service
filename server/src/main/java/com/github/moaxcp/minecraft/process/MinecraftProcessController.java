@@ -6,10 +6,13 @@ import com.github.moaxcp.minecraft.server.cli.StartCommand;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import lombok.NonNull;
 
 import java.util.Optional;
 
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/minecraft-process")
 public class MinecraftProcessController {
   @NonNull

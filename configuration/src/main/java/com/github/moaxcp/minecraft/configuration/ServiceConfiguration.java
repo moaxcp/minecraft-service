@@ -1,5 +1,6 @@
 package com.github.moaxcp.minecraft.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class ServiceConfiguration {
     @Singular
     Map<String, MinecraftConfiguration> configurations;
 
+    @JsonIgnore
     public Optional<MinecraftConfiguration> getSelectedConfiguration() {
         return Optional.ofNullable(configurations.get(selectedServer));
     }
