@@ -11,10 +11,10 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/client" />
             <option value="$PROJECT_DIR$/configuration" />
-            <option value="$PROJECT_DIR$/minecraft-api-client" />
-            <option value="$PROJECT_DIR$/minecraft-server" />
+            <option value="$PROJECT_DIR$/minecraft-service" />
             <option value="$PROJECT_DIR$/non-blocking-pty" />
             <option value="$PROJECT_DIR$/server" />
+            <option value="$PROJECT_DIR$/vanilla-minecraft-api-client" />
           </set>
         </option>
       </GradleProjectSettings>

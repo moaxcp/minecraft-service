@@ -2,11 +2,12 @@ package com.github.moaxcp.minecraft.configuration;
 
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
+
+import java.nio.file.Path;
 
 @Value
 @Builder
@@ -15,11 +16,11 @@ public class MinecraftConfiguration {
   @NotBlank
   String serverName;
   @NotNull
-  JavaJvm javaJvm;
+  Path javaBin;
   @Nullable
   JvmSettings jvmSettings;
   @NotNull
-  MinecraftJar minecraftJar;
+  Path minecraftJar;
   boolean bonusChest;
   boolean demo;
   boolean eraseCache;
@@ -28,10 +29,4 @@ public class MinecraftConfiguration {
   String universe;
   @NotBlank
   String world;
-
-  /**
-   * number of lines of console history to keep.
-   */
-  @Min(0)
-  int historySize;
 }

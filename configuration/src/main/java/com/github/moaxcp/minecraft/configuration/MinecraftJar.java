@@ -10,6 +10,7 @@ import java.nio.file.Path;
 @Value
 @Serdeable
 public class MinecraftJar {
+  int id;
   @NotBlank
   String version;
   @NotNull

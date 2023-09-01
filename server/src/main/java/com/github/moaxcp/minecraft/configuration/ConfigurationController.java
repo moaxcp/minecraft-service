@@ -1,38 +1,30 @@
 package com.github.moaxcp.minecraft.configuration;
 
 
-import com.github.moaxcp.minecraft.jvm.JvmService;
-import com.github.moaxcp.minecraft.server.MinecraftService;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
-import java.util.Collection;
 import java.util.Optional;
 
 @Controller("/minecraft-configuration")
+@AllArgsConstructor
 public class ConfigurationController {
 
   @NonNull
-  private final MinecraftService minecraftService;
-  @NonNull
-  private final JvmService jvmService;
-
-  public ConfigurationController(@NonNull MinecraftService minecraftService, @NonNull JvmService jvmService) {
-    this.minecraftService = minecraftService;
-    this.jvmService = jvmService;
-  }
+  private final ConfigurationService configurationService;
 
   @Get("/configuration")
-  public Collection<MinecraftConfiguration> configurations() {
-    return minecraftService.getConfigurations();
+  public Configuration configurations() {
+    return configurationService.getConfiguration();
   }
 
-  @Get("/configuration/{configurationName}")
-  public Optional<MinecraftConfiguration> getConfiguration(String configurationName) {
-    return minecraftService.getConfiguration(configurationName);
+  @Get("/configuration/{serverName}")
+  public Optional<MinecraftConfiguration> getConfiguration(String serverName) {
+    return configurationService.getMinecraftConfiguration(serverName);
   }
 
   @Post("/configuration")
@@ -42,6 +34,6 @@ public class ConfigurationController {
 
   @Post("/select-configuration/{configurationName}")
   public void selectConfiguration(@PathVariable String configurationName) {
-    minecraftService.selectConfiguration(configurationName);
+    configurationService.selectConfiguration(configurationName);
   }
 }

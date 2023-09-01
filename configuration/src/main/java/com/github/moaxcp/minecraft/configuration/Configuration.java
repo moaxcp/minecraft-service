@@ -13,5 +13,7 @@ import java.util.List;
 public class Configuration {
     ServiceConfiguration serviceConfiguration;
     @Singular
+    List<JavaJvm> jvms;
+    @Singular
     List<MinecraftJar> minecraftJars;
 }

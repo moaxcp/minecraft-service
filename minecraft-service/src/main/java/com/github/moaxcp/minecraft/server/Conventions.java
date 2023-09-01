@@ -20,14 +20,13 @@ public class Conventions {
   public StartCommand toStartCommand(Path baseDirectory, MinecraftConfiguration server) {
     StartCommand.StartCommandBuilder builder = StartCommand.builder()
         .serverDirectory(baseDirectory.resolve(server.getServerName()))
-        .serverJar(baseDirectory.resolve(server.getMinecraftJar().getLocation()))
-        .javaCommand(server.getJavaJvm().getCommand())
+        .serverJar(baseDirectory.resolve(server.getMinecraftJar()))
+        .javaCommand(server.getJavaBin())
         .minecraftArgument(MinecraftArgument.nogui());
     if(server.getJvmSettings() != null) {
       JvmSettings jvmSettings = server.getJvmSettings();
       if(jvmSettings.getMaxMemory() != null) {
         builder.javaArgument(JavaArgument.maxMemory(server.getJvmSettings().getMaxMemory()));
-
       }
       if(jvmSettings.getMinMemory() != null) {
         builder.javaArgument(JavaArgument.minMemory(server.getJvmSettings().getMinMemory()));

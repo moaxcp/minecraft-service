@@ -3,10 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/client/minecraft-server-ui.client.iml" filepath="$PROJECT_DIR$/.idea/modules/client/minecraft-server-ui.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/configuration/minecraft-server-ui.configuration.main.iml" filepath="$PROJECT_DIR$/.idea/modules/configuration/minecraft-server-ui.configuration.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/configuration/minecraft-server-ui.configuration.test.iml" filepath="$PROJECT_DIR$/.idea/modules/configuration/minecraft-server-ui.configuration.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/minecraft-server/minecraft-server-ui.minecraft-server.iml" filepath="$PROJECT_DIR$/.idea/modules/minecraft-server/minecraft-server-ui.minecraft-server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/minecraft-server/minecraft-server-ui.minecraft-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/minecraft-server/minecraft-server-ui.minecraft-server.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/minecraft-server/minecraft-server-ui.minecraft-server.test.iml" filepath="$PROJECT_DIR$/.idea/modules/minecraft-server/minecraft-server-ui.minecraft-server.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/minecraft-service/minecraft-server-ui.minecraft-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/minecraft-service/minecraft-server-ui.minecraft-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/minecraft-service/minecraft-server-ui.minecraft-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/minecraft-service/minecraft-server-ui.minecraft-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/non-blocking-pty/minecraft-server-ui.non-blocking-pty.main.iml" filepath="$PROJECT_DIR$/.idea/modules/non-blocking-pty/minecraft-server-ui.non-blocking-pty.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/server/minecraft-server-ui.server.iml" filepath="$PROJECT_DIR$/.idea/modules/server/minecraft-server-ui.server.iml" />
     </modules>

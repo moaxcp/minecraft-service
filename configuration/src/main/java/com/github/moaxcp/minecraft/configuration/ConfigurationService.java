@@ -18,6 +18,7 @@ public class ConfigurationService {
     private final Path baseDirectory;
     private final Path configurationPath;
     private final ObjectMapper mapper;
+    @Getter
     private Configuration configuration;
     public ConfigurationService(ObjectMapper mapper, @Property(name = "base-directory") Path baseDirectory) {
         this.mapper = mapper;

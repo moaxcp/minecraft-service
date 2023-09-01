@@ -12,8 +12,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Value
 @Builder(toBuilder = true)
 @Serdeable
@@ -34,12 +32,12 @@ public class StartCommand {
     command.add(javaCommand.normalize().toString());
     command.addAll(javaArguments.stream()
         .flatMap(j -> j.getArguments().stream())
-        .collect(toList()));
+        .toList());
     command.add("-jar");
     command.add(serverJar.normalize().toString());
     command.addAll(minecraftArguments.stream()
       .flatMap(m -> m.getArguments().stream())
-      .collect(toList()));
+      .toList());
     return command;
   }
 }

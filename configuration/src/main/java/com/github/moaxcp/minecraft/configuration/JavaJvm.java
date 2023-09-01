@@ -12,6 +12,7 @@ import java.nio.file.Path;
 @Builder
 @Serdeable
 public class JavaJvm {
+  int id;
   @NotNull
   Path command;
   @NotBlank

@@ -34,8 +34,8 @@ micronaut {
 
 dependencies {
     runtimeOnly("org.yaml:snakeyaml")
-    implementation project(':minecraft-server')
-    implementation project(':minecraft-api-client')
+    implementation project(':minecraft-service')
+    implementation project(':vanilla-minecraft-api-client')
 
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     implementation "io.swagger.core.v3:swagger-annotations"
@@ -43,8 +43,9 @@ dependencies {
     annotationProcessor('io.micronaut.serde:micronaut-serde-processor:2.2.0')
     implementation("io.micronaut.serde:micronaut-serde-jackson:2.2.0")
 
-    annotationProcessor("io.micronaut:micronaut-http-validation")
-    implementation("io.micronaut:micronaut-http-client")
+    annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
+    implementation("io.micronaut.validation:micronaut-validation")
+
     implementation("io.micronaut:micronaut-runtime")
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic:1.4.11")
