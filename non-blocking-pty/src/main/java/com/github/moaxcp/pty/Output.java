@@ -1,6 +1,7 @@
 package com.github.moaxcp.pty;
 
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,7 +14,7 @@ class Output implements Runnable {
   @Getter
   private volatile boolean running = false;
   @Getter
-  private volatile Throwable throwable;
+  private volatile Throwable failure;
 
   public Output(@NonNull InputStream processOutput) {
     this.processOutput = processOutput;
@@ -31,11 +32,17 @@ class Output implements Runnable {
           break;
         }
       } catch (Throwable e) {
-        throwable = e;
+        failure = e;
         break;
       }
       output.add(new ReadBytes(bytes, read));
     }
     running = false;
+  }
+
+  public void start() {
+    var thread = new Thread(this);
+    thread.setName("NonBlockingPty-Output-" + UUID.randomUUID());
+    thread.start();
   }
 }

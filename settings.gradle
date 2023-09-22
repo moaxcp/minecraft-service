@@ -6,3 +6,5 @@ include 'minecraft-service'
 include 'vanilla-minecraft-api-client'
 include 'non-blocking-pty'
 include 'configuration'
+include 'pty-unix-socket'
+

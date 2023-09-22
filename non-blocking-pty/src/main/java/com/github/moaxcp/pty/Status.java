@@ -9,13 +9,13 @@ import lombok.Value;
 public class Status {
   long pid;
   WinSize winSize;
-  Integer result;
+  Integer exitCode;
   boolean eventLoopRunning;
-  Throwable eventLoopException;
+  Throwable eventLoopFailure;
   boolean inputRunning;
-  Throwable inputException;
+  Throwable inputFailure;
   boolean outputRunning;
-  Throwable outputException;
+  Throwable outputFailure;
   boolean errorRunning;
-  Throwable errorException;
+  Throwable errorFailure;
 }

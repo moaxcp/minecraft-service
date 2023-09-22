@@ -1,24 +1,26 @@
 package com.github.moaxcp.pty;
 
 import com.pty4j.PtyProcess;
-import java.io.OutputStream;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.Getter;
 import lombok.NonNull;
+
+import java.io.OutputStream;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 class Input implements Runnable {
   private final PtyProcess process;
   @Getter
   private final ConcurrentLinkedQueue<byte[]> input = new ConcurrentLinkedQueue<>();
-  private final OutputStream processInput;
+  private final OutputStream output;
   @Getter
   private volatile boolean running = false;
   @Getter
-  private volatile Throwable throwable;
+  private volatile Throwable failure;
 
-  public Input(@NonNull PtyProcess process, @NonNull OutputStream processInput) {
+  public Input(@NonNull PtyProcess process) {
     this.process = process;
-    this.processInput = processInput;
+    this.output = process.getOutputStream();
   }
 
   @Override
@@ -28,21 +30,21 @@ class Input implements Runnable {
       byte[] bytes = input.poll();
       if (bytes == null) {
         try {
-          Thread.sleep(10);
+          Thread.sleep(20);
           continue;
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
-          throwable = e;
+          failure = e;
           break;
         }
       }
-      try {
-        processInput.write(bytes);
-      } catch (Throwable e) {
-        throwable = e;
-        break;
-      }
     }
     running = false;
+  }
+
+  public void start() {
+    var thread = new Thread(this);
+    thread.setName("NonBlockingPty-Input-" + UUID.randomUUID());
+    thread.start();
   }
 }

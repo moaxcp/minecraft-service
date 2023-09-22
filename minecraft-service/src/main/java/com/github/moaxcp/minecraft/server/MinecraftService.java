@@ -64,7 +64,9 @@ public class MinecraftService {
       throw new IllegalStateException("process must first be stopped.");
     }
     var startConfiguration = configurationService.getSelectedConfiguration().orElseThrow(() -> new IllegalStateException("startConfiguration must be selected"));
-    process = new MinecraftProcess(configurationService.getConfiguration().getServiceConfiguration().getHistorySize(), Conventions.toStartCommand(configurationService.getBaseDirectory(), startConfiguration));
+    process = new MinecraftProcess(configurationService.getConfiguration().getServiceConfiguration().getHistorySize(),
+        Conventions.toStartCommand(configurationService.getBaseDirectory(), startConfiguration),
+        configurationService.getBaseDirectory().resolve(configurationService.getConfiguration().getUnixSocketFile()));
     process.start();
     runningServer = startConfiguration;
   }

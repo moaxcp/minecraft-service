@@ -29,6 +29,7 @@ micronaut {
 dependencies {
     api project(':non-blocking-pty')
     api project(':configuration')
+    implementation project(':pty-unix-socket')
 
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor "org.projectlombok:lombok:1.18.28"

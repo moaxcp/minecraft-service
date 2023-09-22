@@ -1,33 +1,48 @@
 package com.github.moaxcp.pty;
 
 import com.pty4j.PtyProcess;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
+import com.pty4j.WinSize;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+
 class EventLoop implements Runnable {
   @Getter
-  private Integer result;
+  private Integer exitCode;
   @Getter
   private boolean running;
   @Getter
-  private Throwable throwable;
+  private Throwable failure;
   private final ConcurrentHashMap<String, Consumer<byte[]>> outputListeners = new ConcurrentHashMap<>();
   private final ConcurrentHashMap<String, Consumer<byte[]>> errorListeners = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, Consumer<Status>> statusListeners = new ConcurrentHashMap<>();
 
   private final PtyProcess process;
 
+  private final Input processInput;
+
   private final Output processOutput;
+
   private final Output processError;
 
-  EventLoop(Output processOutput, Output processError, PtyProcess process) {
+  private Status status;
+
+  EventLoop(Input processInput, Output processOutput, Output processError, PtyProcess process) {
+    this.processInput = processInput;
     this.processOutput = processOutput;
     this.processError = processError;
     this.process = process;
+  }
+
+  public void addOutputListeners(Map<String, Consumer<byte[]>> outputListeners) {
+    this.outputListeners.putAll(outputListeners);
   }
 
   public void addOutputListener(@NonNull String name, @NonNull Consumer<byte[]> consumer) {
@@ -42,6 +57,10 @@ class EventLoop implements Runnable {
     outputListeners.clear();
   }
 
+  public void addErrorListeners(Map<String, Consumer<byte[]>> errorListeners) {
+    this.errorListeners.putAll(errorListeners);
+  }
+
   public void addErrorListener(@NonNull String name, @NonNull Consumer<byte[]> consumer) {
     errorListeners.put(name, consumer);
   }
@@ -54,18 +73,41 @@ class EventLoop implements Runnable {
     errorListeners.clear();
   }
 
+  public void addStatusListeners(Map<String, Consumer<Status>> statusListeners) {
+    this.statusListeners.putAll(statusListeners);
+  }
+
+  public void addStatusListener(@NonNull String name, @NonNull Consumer<Status> consumer) {
+    statusListeners.put(name, consumer);
+  }
+
+  public void removeStatusListener(@NonNull String name) {
+    statusListeners.remove(name);
+  }
+
+  public void removeAllStatusListeners() {
+    statusListeners.clear();
+  }
+
   @Override
   public void run() {
     running = true;
 
     boolean hadOutput = sendOutput();
     boolean hadError = sendError();
-    while(hadOutput || hadError || process.isAlive()) {
+    while(process.isAlive()) {
+      if (status == null) {
+        status = status();
+      }
+      if(!status.equals(status())) {
+        status = status();
+        sendStatus();
+      }
       if(!(hadOutput || hadError)) {
         try {
-          Thread.sleep(10);
+          Thread.sleep(20); //check 50 times per second
         } catch (InterruptedException e) {
-          throwable = e;
+          failure = e;
           Thread.currentThread().interrupt();
           break;
         }
@@ -75,7 +117,14 @@ class EventLoop implements Runnable {
     }
 
     running = false;
-    result = process.exitValue();
+    process.destroy();
+    exitCode = process.exitValue();
+  }
+
+  private void sendStatus() {
+    for (Consumer<Status> consumer : statusListeners.values()) {
+      consumer.accept(status);
+    }
   }
 
   private boolean sendOutput() {
@@ -105,10 +154,38 @@ class EventLoop implements Runnable {
   }
 
   private boolean sendError() {
-    return sendOutput(processError, errorListeners.values());
+    if (processError == null) {
+      return sendOutput(processOutput, errorListeners.values());
+    } else {
+      return sendOutput(processError, errorListeners.values());
+    }
   }
 
-  public void addOutputListeners(Map<String, Consumer<byte[]>> outputListeners) {
-    this.outputListeners.putAll(outputListeners);
+  public void start() {
+    var thread = new Thread(this);
+    thread.setName("NonBlockingPty-EventLoop-" + UUID.randomUUID());
+    thread.start();
+  }
+
+  public Status status() {
+    WinSize winSize = null;
+    try {
+      winSize = process.getWinSize();
+    } catch (IOException e) {
+      //will be null
+    }
+    return Status.builder()
+        .pid(process.pid())
+        .winSize(winSize)
+        .exitCode(getExitCode())
+        .eventLoopRunning(isRunning())
+        .eventLoopFailure(getFailure())
+        .inputRunning(processInput.isRunning())
+        .inputFailure(processInput.getFailure())
+        .outputRunning(processOutput.isRunning())
+        .outputFailure(processOutput.getFailure())
+        .errorRunning(processError.isRunning())
+        .errorFailure(processError.getFailure())
+        .build();
   }
 }

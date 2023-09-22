@@ -4,13 +4,14 @@ import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class NonBlockingPty {
+public class NonBlockingPty implements AutoCloseable {
   private final PtyProcessBuilder builder;
   boolean redirectError;
   private PtyProcess process;
@@ -19,6 +20,9 @@ public class NonBlockingPty {
   private Output error;
   private EventLoop eventLoop;
   private final Map<String, Consumer<byte[]>> outputListeners = new HashMap<>();
+  private final Map<String, Consumer<byte[]>> errorListeners = new HashMap<>();
+  private final Map<String, Consumer<Status>> statusListeners = new HashMap<>();
+  private final List<Plugin> plugins = new ArrayList<>();
 
   public NonBlockingPty(Path commandDirectory, String... command) throws IOException {
     this(commandDirectory, true, command);
@@ -32,22 +36,31 @@ public class NonBlockingPty {
     this(commandDirectory, toCommand.toArray(new String[]{}));
   }
 
+  public void register(Plugin plugin) {
+    plugin.input(this::input);
+    addOutputListener(plugin.getName(), plugin::output);
+    addErrorListener(plugin.getName(), plugin::error);
+    addStatusListener(plugin.getName(), plugin::status);
+  }
+
   public void start() throws IOException {
     process = builder.start();
-    input = new Input(process, process.getOutputStream());
+    input = new Input(process);
     output = new Output(process.getInputStream());
 
-    new Thread(input).start();
-    new Thread(output).start();
+    input.start();
+    output.start();
     if(!redirectError) {
       error = new Output(process.getErrorStream());
-      new Thread(error).start();
+      error.start();
     } else {
       error = null;
     }
-    eventLoop = new EventLoop(output, error, process);
+    eventLoop = new EventLoop(input, output, error, process);
     eventLoop.addOutputListeners(outputListeners);
-    new Thread(eventLoop).start();
+    eventLoop.addErrorListeners(errorListeners);
+    eventLoop.addStatusListeners(statusListeners);
+    eventLoop.start();
   }
 
   public void addOutputListener(String name, Consumer<byte[]> listener) {
@@ -59,39 +72,71 @@ public class NonBlockingPty {
   }
 
   public void removeOutputListener(String name) {
-    eventLoop.removeOutputListener(name);
+    if (eventLoop == null) {
+      outputListeners.remove(name);
+    } else {
+      eventLoop.removeOutputListener(name);
+    }
   }
 
   public void removeAllOutputListeners() {
-    eventLoop.removeAllOutputListeners();
+    if (eventLoop == null) {
+      outputListeners.clear();
+    } else {
+      eventLoop.removeAllOutputListeners();
+    }
   }
 
   public void addErrorListener(String name, Consumer<byte[]> listener) {
-    eventLoop.addErrorListener(name, listener);
+    if (eventLoop == null) {
+      errorListeners.put(name, listener);
+    } else {
+      eventLoop.addErrorListener(name, listener);
+    }
   }
 
   public void removeErrorListener(String name) {
-    eventLoop.removeErrorListener(name);
+    if (eventLoop == null) {
+      errorListeners.remove(name);
+    } else {
+      eventLoop.removeErrorListener(name);
+    }
   }
 
   public void removeAllErrorListeners() {
-    eventLoop.removeAllErrorListeners();
+    if (eventLoop == null) {
+      errorListeners.clear();
+    } else {
+      eventLoop.removeAllErrorListeners();
+    }
+  }
+
+  public void addStatusListener(String name, Consumer<Status> listener) {
+    if (eventLoop == null) {
+      statusListeners.put(name, listener);
+    } else {
+      eventLoop.addStatusListener(name, listener);
+    }
+  }
+
+  public void removeStatusListener(String name) {
+    if (eventLoop == null) {
+      statusListeners.remove(name);
+    } else {
+      eventLoop.removeStatusListener(name);
+    }
+  }
+
+  public void removeAllStatusListeners() {
+    if (eventLoop == null) {
+      statusListeners.clear();
+    } else {
+      eventLoop.removeAllStatusListeners();
+    }
   }
 
   public Status status() throws IOException {
-    return Status.builder()
-      .pid(process.pid())
-      .winSize(process.getWinSize())
-      .result(eventLoop.getResult())
-      .eventLoopRunning(eventLoop.isRunning())
-      .eventLoopException(eventLoop.getThrowable())
-      .inputRunning(input.isRunning())
-      .inputException(input.getThrowable())
-      .outputRunning(output.isRunning())
-      .outputException(output.getThrowable())
-      .errorRunning(error.isRunning())
-      .errorException(error.getThrowable())
-      .build();
+    return eventLoop.status();
   }
 
   public boolean isRunning() {
@@ -108,5 +153,10 @@ public class NonBlockingPty {
 
   public void input(byte[] bytes) {
     input.getInput().add(bytes);
+  }
+
+  @Override
+  public void close() {
+    stop();
   }
 }

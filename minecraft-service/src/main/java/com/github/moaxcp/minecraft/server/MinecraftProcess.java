@@ -3,16 +3,17 @@ package com.github.moaxcp.minecraft.server;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
 import com.github.moaxcp.pty.NonBlockingPty;
 import com.github.moaxcp.pty.Status;
-import lombok.Getter;
-
+import com.github.moaxcp.pty.socket.PtyUnixSocket;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import lombok.Getter;
 
 import static com.github.moaxcp.minecraft.server.MinecraftProcessStatus.*;
 
@@ -20,13 +21,15 @@ public class MinecraftProcess {
   @Getter
   private StartCommand startCommand;
   private final int historyCapacity;
+  private final Path unixSocketPath;
   private NonBlockingPty process;
   private MinecraftProcessStatus status;
   private final List<Byte> history = new ArrayList<>();
 
-  public MinecraftProcess(int historyCapacity, StartCommand startCommand) {
+  public MinecraftProcess(int historyCapacity, StartCommand startCommand, Path unixSocketPath) {
     this.historyCapacity = historyCapacity;
     this.startCommand = startCommand;
+    this.unixSocketPath = unixSocketPath;
     status = CREATED;
   }
 
@@ -41,6 +44,7 @@ public class MinecraftProcess {
     try {
       process = new NonBlockingPty(startCommand.getServerDirectory(), startCommand.toCommand());
       process.addOutputListener("server", this::accept);
+      process.register(new PtyUnixSocket(unixSocketPath));
       process.start();
       status = STARTING;
     } catch (IOException e) {

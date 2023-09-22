@@ -27,7 +27,7 @@ public class ConfigurationService {
         try (var in = Files.newInputStream(configurationPath)) {
             configuration = mapper.readValue(in, Configuration.class);
         } catch (NoSuchFileException e) {
-            configuration = Configuration.builder().build();
+            configuration = Configuration.builder().unixSocketFile(Path.of("unix-socket")).build();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -52,6 +52,7 @@ public class ConfigurationService {
         }
         try (var out = Files.newOutputStream(configurationPath)) {
             mapper.writeValue(out, configuration);
+            out.flush();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -80,5 +81,11 @@ public class ConfigurationService {
 
     public void addMinecraftJar(MinecraftJar jar) {
         configuration = configuration.toBuilder().minecraftJar(jar).build();
+        save();
+    }
+
+    public void setUnixSocketFile(Path unixSocketFile) {
+        configuration = configuration.toBuilder().unixSocketFile(unixSocketFile).build();
+        save();
     }
 }
