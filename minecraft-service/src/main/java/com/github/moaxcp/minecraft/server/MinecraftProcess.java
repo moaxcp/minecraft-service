@@ -3,7 +3,9 @@ package com.github.moaxcp.minecraft.server;
 import com.github.moaxcp.minecraft.server.cli.StartCommand;
 import com.github.moaxcp.pty.NonBlockingPty;
 import com.github.moaxcp.pty.Status;
-import com.github.moaxcp.pty.socket.PtyUnixSocket;
+import com.github.moaxcp.pty.socket.PtyUnixSocketPlugin;
+import lombok.Getter;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import lombok.Getter;
 
 import static com.github.moaxcp.minecraft.server.MinecraftProcessStatus.*;
 
@@ -44,7 +45,7 @@ public class MinecraftProcess {
     try {
       process = new NonBlockingPty(startCommand.getServerDirectory(), startCommand.toCommand());
       process.addOutputListener("server", this::accept);
-      process.register(new PtyUnixSocket(unixSocketPath));
+      process.register(new PtyUnixSocketPlugin(unixSocketPath));
       process.start();
       status = STARTING;
     } catch (IOException e) {

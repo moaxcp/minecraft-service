@@ -1,7 +1,10 @@
 package com.github.moaxcp.pty.socket;
 
-import com.github.moaxcp.pty.AbstractPlugin;
-import com.github.moaxcp.pty.Status;
+import lombok.Getter;
+import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.StandardProtocolFamily;
@@ -11,11 +14,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import lombok.Getter;
-import lombok.NonNull;
 
-public class PtyUnixSocket extends AbstractPlugin implements Runnable, AutoCloseable {
+public class PtyUnixSocket implements Runnable, AutoCloseable {
+    private static final Logger logger = LoggerFactory.getLogger(PtyUnixSocket.class);
+
+    private final String name;
     private final ServerSocketChannel serverChannel;
     private final List<ClientLoop> clients = new ArrayList<>();
     private volatile boolean running;
@@ -23,26 +26,30 @@ public class PtyUnixSocket extends AbstractPlugin implements Runnable, AutoClose
     @Getter
     private Throwable failure;
 
-    public PtyUnixSocket(@NonNull Path file) {
-        super("PtyUnixSocket-ClientLoop-" + UUID.randomUUID());
-
+    public PtyUnixSocket(@NonNull String name, @NonNull Path file) {
+        this.name = name;
         try {
             Files.deleteIfExists(file);
             var address = UnixDomainSocketAddress.of(file);
             serverChannel = ServerSocketChannel.open(StandardProtocolFamily.UNIX);
             serverChannel.bind(address);
+            logger.info("{} bound to {}", name, address);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
+    public void start() {
+        var thread = new Thread(this);
+        thread.setName(name);
+        thread.start();
+    }
 
     public void run() {
         running = true;
+        logger.info("{} started.", name);
         while(running) {
-            if (!eventLoopRunning) {
-                break;
-            }
             try {
+                logger.info("{} waiting for connection.", name);
                 var socketChannel = serverChannel.accept();
                 var client = new ClientLoop(name, socketChannel, 1024);
                 client.start();
@@ -53,6 +60,7 @@ public class PtyUnixSocket extends AbstractPlugin implements Runnable, AutoClose
             }
         }
         clients.forEach(ClientLoop::close);
+        logger.info("{} stopped.", name);
     }
 
     @Override
@@ -61,22 +69,10 @@ public class PtyUnixSocket extends AbstractPlugin implements Runnable, AutoClose
         try {
             serverChannel.close();
         } catch (IOException e) {
+            logger.error("error closing {}", name, e);
             failure = e;
         }
-    }
 
-    @Override
-    public void output(byte[] bytes) {
-
-    }
-
-    @Override
-    public void error(byte[] bytes) {
-
-    }
-
-    @Override
-    public void status(Status status) {
-        eventLoopRunning = status.isEventLoopRunning();
+        logger.info("{} closed", name);
     }
 }

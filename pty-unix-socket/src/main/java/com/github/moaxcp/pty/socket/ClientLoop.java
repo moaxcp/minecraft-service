@@ -2,13 +2,17 @@ package com.github.moaxcp.pty.socket;
 
 import com.github.moaxcp.pty.AbstractPlugin;
 import com.github.moaxcp.pty.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 public class ClientLoop extends AbstractPlugin implements Runnable, AutoCloseable {
 
+    private static final Logger logger = LoggerFactory.getLogger(ClientLoop.class);
     private final SocketChannel socket;
     private final int bufferSize;
 
@@ -23,6 +27,7 @@ public class ClientLoop extends AbstractPlugin implements Runnable, AutoCloseabl
     @Override
     public void run() {
         running = true;
+        logger.info("{} started.", getName());
         while (socket.isConnected()) {
             var buffer = ByteBuffer.allocate(bufferSize);
             try {
@@ -36,10 +41,11 @@ public class ClientLoop extends AbstractPlugin implements Runnable, AutoCloseabl
                 buffer.get(bytes);
                 input.accept(bytes);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new UncheckedIOException(e);
             }
         }
 
+        logger.info("{} stopped.", getName());
     }
 
     @Override
@@ -47,7 +53,7 @@ public class ClientLoop extends AbstractPlugin implements Runnable, AutoCloseabl
         try {
             socket.write(ByteBuffer.wrap(bytes));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -55,7 +61,7 @@ public class ClientLoop extends AbstractPlugin implements Runnable, AutoCloseabl
         try {
             socket.write(ByteBuffer.wrap(bytes));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
